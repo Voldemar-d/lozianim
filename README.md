@@ -28,14 +28,20 @@ options can be:
 -height {N}		set output image height in pixels, 720 by default
 -outfolder {path}	set output folder (will be created it doesn't exist) for saving image files
 -steps {N}		set number of output images (animation steps), 1 by default
--coef1 {v}		set value (float) of coefficient 1, 1.0 by default
--coef2 {v}		set value (float) of coefficient 2, 0.0 by default
--coef1end {v}		set ending value (float) of coefficient 1, 2.0 by default
--coef2end {v}		set ending value (float) of coefficient 2, 0.5 by default
+-coef1 {v}		set value (float) of coefficient B, -1.0 by default
+-coef2 {v}		set value (float) of coefficient C, 0.5 by default
+-coef1end {v}		set ending value (float) of coefficient B, -1.0 by default
+-coef2end {v}		set ending value (float) of coefficient C, 1.0 by default
 -coefin {file}		get B/C coefficient animation from specified text file
 -threads {N}		set number of running threads: use -threads max to use CPU cores number,
 use -threads half to use 1/2 CPU cores number (default) or specify a number, e.g. -threads 4
 Pressing 'q' stops writing image series.
+
+Every line in coefficient animation text file must consist of:
+{steps} {coef1from} {coef1to} {coef2from} {coef2to}
+
+Example (B: -1.0 => -1.0, C: 0.5 => 1.0 in 100 steps):
+100 -1.0 -1.0 0.5 1
 </pre>
 If one image is generated, file name 'image.png' is used, and 'imageNNNNN.png' for image series.
 ### Examples
