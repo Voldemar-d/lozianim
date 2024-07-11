@@ -38,7 +38,7 @@ use -threads half to use 1/2 CPU cores number (default) or specify a number, e.g
 Pressing 'q' stops writing image series.
 
 Every line in coefficient animation text file must consist of:
-{steps} {coef1from} {coef1to} {coef2from} {coef2to}
+{steps} {coef1} {coef1to} {coef2} {coef2to}
 
 Example (B: -1.0 => -1.0, C: 0.5 => 1.0 in 100 steps):
 100 -1.0 -1.0 0.5 1
