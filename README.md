@@ -6,7 +6,7 @@ C++ code based on the algorithm found [here](https://galileo-unbound.blog/2018/1
 
 Uses [libpng](https://github.com/libpng/libpng/tree/main "libpng") library for saving generated images to PNG files. Requires C++20. Compiled and tested under Windows and Ubuntu (WSL).
 
-The code above generates one image. The program allows to save series of images with animation of **B** and **C** coefficients between values specified in command line. You can also specify a text file with several ranges of coefficients and number of animation steps.
+The program allows to save one image and series of images with animation of **B** and **C** coefficients between values specified in command line. You can also specify a text file with several ranges of coefficients and number of animation steps.
 
 Number of working threads can be specified for faster images generation and saving. Half number of (logical) CPU cores is used by default.
 
