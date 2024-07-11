@@ -99,7 +99,7 @@ bool coefAnim::parse(const std::string& infile) {
 void coefAnim::outfmt()
 {
 	std::cout << "\nEvery line in coefficient animation text file must consist of:\n";
-	std::cout << "{steps} {coef1from} {coef1to} {coef2from} {coef2to}\n\n";
+	std::cout << "{steps} {coef1} {coef1to} {coef2} {coef2to}\n\n";
 	std::cout << "Example (B: -1.0 => -1.0, C: 0.5 => 1.0 in 100 steps):\n";
 	std::cout << "100 -1.0 -1.0 0.5 1\n";
 }
