@@ -15,7 +15,7 @@ Number of working threads can be specified for faster images generation and savi
 Additions:
 
 - sample 4K video with several animations of coefficients: [https://youtu.be/mQiJQ8mD6QI](https://youtu.be/mQiJQ8mD6QI)
-- **anim.txt** file defines coefficient animation used to generate sample video 
+- **lozi.txt** file defines coefficient animation used to generate sample video 
 - **lozi.html** file contains script for generating one image in browser (coefficients can be changed)
 - **win** subfolder contains archive with compiled executable for Windows. 
 
@@ -56,10 +56,14 @@ Creates one image 'D:\tmp\png\image.png' with 800x450 width and height, uses val
 
 This was used to create sample image in file 'image.png' 
 <pre>
-fracanim.exe -outfolder D:\tmp\png -steps 1000 -width 1920 -height 1080
+lozianim.exe -outfolder D:\tmp\png -steps 1000 -width 1920 -height 1080
 </pre>
 Creates 1000 images (1920x1080 pixels) in 'D:\tmp\png' folder running on half of available CPU cores. Coefficients are changed in 1000 steps between default values: `B: -1.0`, `C: 0.5 -> 1.0`
 <pre>
-fracanim.exe -outfolder D:\tmp\png -steps 1000 -width 1920 -height 1080 -coef1 -0.1 -coef1end -1.0 -coef2 0.5 -coef2end 0.5 -threads max
+lozianim.exe -outfolder D:\tmp\png -steps 1000 -width 1920 -height 1080 -coef1 -0.1 -coef1end -1.0 -coef2 0.5 -coef2end 0.5 -threads max
 </pre>
-Creates 1000 images (1920x1080 pixels) in 'D:\tmp\png' folder running on all available CPU cores (with maximal CPU load). Animates coefficient B from -0.1 to -1.0, coefficient C is set to 0.5.
+Creates 1000 images (1920x1080 pixels) in 'D:\tmp\png' folder running on all available CPU cores (with maximal CPU load). Animates coefficient **B** from -0.1 to -1.0, coefficient **C** is set to 0.5.
+<pre>
+lozianim.exe -outfolder D:\tmp\png -width 1920 -height 1080 -coefin lozi.txt -threads max
+</pre>
+Creates series of images (1920x1080 pixels) in 'D:\tmp\png' folder running on all available CPU cores (with maximal CPU load). Animation of **B/C** coefficients is specified in **lozi.txt** file.
