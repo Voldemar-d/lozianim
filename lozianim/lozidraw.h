@@ -28,13 +28,16 @@ using pixBuf = std::vector<uint32_t>;
 class CFracDraw {
 public:
 	CFracDraw() {}
-	CFracDraw(int index) {
+	CFracDraw(int index, bool bMix) {
 		m_nStartIndex = index;
+		m_bUseMap = !bMix;
 	}
 	~CFracDraw() {
 		Stop();
 	}
-	void DrawLozi(pixColorMap& pcmap, pixBuf& pix, const int w, const int h,
+	void DrawLoziMap(pixColorMap& pcmap, pixBuf& pix, const int w, const int h,
+		const double B, const double C) const;
+	void DrawLoziMix(pixBuf& pix, const int w, const int h,
 		const double B, const double C) const;
 	void SaveSteps(const int nthreads, std::string_view outfolder, const int w, const int h,
 		const double dFrom1, const double dTo1, const double dFrom2, const double dTo2, const int nTotal);
@@ -48,6 +51,7 @@ public:
 protected:
 	void AddPixel(pixColorMap& pcmap, const int x, const int y, const uint32_t col, const int w, const int h) const;
 	void DrawPix(pixColorMap& pcmap, pixBuf& pixb, const int w, const int h, const int mix) const;
+	void MixPixel(pixBuf& pix, const int x, const int y, const uint32_t col, const int w, const int h, const int mix) const;
 	void SaveStep(const int w, const int h, const int nStart, const int nStep, const int nTotal,
 		double dFrom1, double dTo1, double dFrom2, double dTo2, std::promise<void> pr);
 	void SaveImg(const int w, const int h, const int i, const pixBuf& pix, uint8_t* buf, std::thread& th);
@@ -57,4 +61,5 @@ private:
 	std::atomic_bool m_bStop{ false };
 	std::atomic_int m_nCnt{ 0 }, m_nWorking{ 0 };
 	int m_nStartIndex = 0;
+	bool m_bUseMap = true;
 };

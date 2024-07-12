@@ -18,6 +18,7 @@ void printHelp(char** argv, const bool bFull) {
 	std::cout << "-help\t\t\tdisplay this help" << '\n';
 	std::cout << "-width {N}\t\tset output image width in pixels, 1280 by default" << '\n';
 	std::cout << "-height {N}\t\tset output image height in pixels, 720 by default" << '\n';
+	std::cout << "-mix\t\t\tmix pixel color with background without pixel/color map (turned off by default)" << '\n';
 	std::cout << "-outfolder {path}\tset output folder (will be created it doesn't exist) for saving image files" << '\n';
 	std::cout << "-steps {N}\t\tset number of output images (animation steps), 1 by default" << '\n';
 	std::cout << "-coef1 {v}\t\tset value (float) of coefficient B, -1.0 by default" << '\n';
@@ -80,6 +81,7 @@ int main(int argc, char* argv[])
 		std::cout << "Width and height must be not less than 2 pixels\n";
 		return -1;
 	}
+	const bool bMix = input.cmdOptionExists("-mix");
 
 	coefAnim coef;
 	if (input.cmdOptionExists("-coefin")) {
@@ -132,7 +134,7 @@ int main(int argc, char* argv[])
 		if (nsteps < 1) nsteps = 1;
 	}
 
-	auto saveSteps = [width, height, &outfolder](int nstart, int ntotal, int nthreads,
+	auto saveSteps = [bMix, width, height, &outfolder](int nstart, int ntotal, int nthreads,
 		double coef1, double coef1end, double coef2, double coef2end, int nsteps)
 	{
 		auto funcStop = []() {
@@ -164,11 +166,11 @@ int main(int argc, char* argv[])
 #endif
 			return false;
 		};
-		
+
 		bool bBreak = false;
 		const auto tstart = cr::steady_clock::now();
 		{
-			CFracDraw frac(nstart); int cnt = -1;
+			CFracDraw frac(nstart, bMix); int cnt = -1;
 			frac.SaveSteps(nthreads, outfolder, width, height, coef1, coef1end, coef2, coef2end, nsteps);
 			for (;;) {
 				if (funcStop()) {
@@ -189,9 +191,13 @@ int main(int argc, char* argv[])
 		return bBreak;
 	};
 
-	auto showStart = [width, height, &outfolder, nthreads](int nImages) {
+	auto showStart = [bMix, width, height, &outfolder, nthreads](int nImages) {
 		std::cout << "Generating and saving " << nImages << " images (" << width << " x " << height << ") to:\n";
 		std::cout << outfolder << '\n';
+		if (bMix)
+			std::cout << "Mixing colors with background\n";
+		else
+			std::cout << "Using pixel/color map for mixing with background\n";
 		std::cout << "Running " << nthreads << " threads, press 'q' to exit:\n";
 		return cr::steady_clock::now();
 	};
@@ -210,10 +216,15 @@ int main(int argc, char* argv[])
 		if (nsteps < 2) { // save one image
 			fs::path fpath(outfolder);
 			fpath.append("image.png");
-			pixColorMap pcmap; pixBuf pix;
-			std::cout << "Generating image...\n";
+			std::cout << "Generating image (" << (bMix ? "mix color" : "use pixel/color map") << ")...\n";
 			CFracDraw frac;
-			frac.DrawLozi(pcmap, pix, width, height, coef1, coef2);
+			pixBuf pix;
+			if (bMix)
+				frac.DrawLoziMix(pix, width, height, coef1, coef2);
+			else {
+				pixColorMap pcmap;
+				frac.DrawLoziMap(pcmap, pix, width, height, coef1, coef2);
+			}
 			std::vector<uint8_t> buf;
 			write_png_file(fpath.string().c_str(), width, height, (uint8_t*)pix.data(), buf);
 			std::cout << "Saved " << width << " x " << height << " image: " << fpath.string() << '\n';

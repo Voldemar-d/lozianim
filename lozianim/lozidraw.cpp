@@ -22,7 +22,7 @@ const uint32_t clr[] = {
 	RGB(0,0,255),
 };
 
-void CFracDraw::DrawLozi(pixColorMap& pcmap, pixBuf& pix, const int w, const int h,
+void CFracDraw::DrawLoziMap(pixColorMap& pcmap, pixBuf& pix, const int w, const int h,
 	const double B, const double C) const
 {
 	double xlast, ylast, xnew, ynew;
@@ -48,6 +48,36 @@ void CFracDraw::DrawLozi(pixColorMap& pcmap, pixBuf& pix, const int w, const int
 		}
 	}
 	DrawPix(pcmap, pix, w, h, 3);
+}
+
+void CFracDraw::DrawLoziMix(pixBuf& pix, const int w, const int h,
+	const double B, const double C) const
+{
+	const size_t sz = w * h;
+	if (sz != pix.size()) pix.resize(sz);
+	std::fill(pix.begin(), pix.end(), 0);
+	double xlast, ylast, xnew, ynew;
+	srand(1);
+	constexpr double rm = 1.0 / double(RAND_MAX),
+		xmin = -1.3, xmax = 2.25, ymin = -2.25, ymax = 1.25;
+	const double xscale = double(w) / (xmax - xmin), yscale = double(h) / (ymax - ymin);
+	int x, y; uint32_t col = 0;
+	for (int j = 0; j < 500; j++) {
+		xlast = double(rand()) * rm;
+		ylast = double(rand()) * rm;
+		col = clr[rand() % std::size(clr)];
+		for (int i = 0; i < 1000; i++) {
+			xnew = 1.0 + ylast - C * fabs(xlast);
+			ynew = B * xlast;
+			xlast = xnew;
+			ylast = ynew;
+			if (xnew >= xmin && xnew < xmax && ynew >= ymin && ynew < ymax) {
+				x = int((xnew - xmin) * xscale);
+				y = int((ynew - ymin) * yscale);
+				MixPixel(pix, x, y, col, w, h, 6);
+			}
+		}
+	}
 }
 
 void CFracDraw::AddPixel(pixColorMap& pcmap, const int x, const int y, const uint32_t col, const int w, const int h) const
@@ -100,6 +130,25 @@ void CFracDraw::DrawPix(pixColorMap& pcmap, pixBuf& pixb, const int w, const int
 	}
 }
 
+void CFracDraw::MixPixel(pixBuf& pix, const int x, const int y, const uint32_t col, const int w, const int h, const int mix) const
+{
+	if (x < 0 || y < 0 || x >= w || y >= h)
+		return;
+	if (pix.empty())
+		pix.resize(w * h, 0);
+	auto& v = pix[y * w + x];
+	// RGB of background
+	int rb = GetRValue(v), gb = GetGValue(v), bb = GetBValue(v);
+	// RGB of color
+	int rc = GetRValue(col), gc = GetGValue(col), bc = GetBValue(col);
+	const int kc = 10 - mix, kb = 10 - kc;
+	// mix color and background with weight
+	rc = (rc * kc + rb * kb) / 10; if (rc > 255) rc = 255;
+	gc = (gc * kc + gb * kb) / 10; if (gc > 255) gc = 255;
+	bc = (bc * kc + bb * kb) / 10; if (bc > 255) bc = 255;
+	v = RGB(rc, gc, bc);
+}
+
 void CFracDraw::Stop() {
 	m_bStop = true;
 	for (auto& th : m_thr) {
@@ -146,7 +195,10 @@ void CFracDraw::SaveStep(const int w, const int h, const int nStart, const int n
 			m_nCnt = i;
 		coef1 = dFrom1 + double(i) * dRange1 * dk;
 		coef2 = dFrom2 + double(i) * dRange2 * dk;
-		DrawLozi(map, pix, w, h, coef1, coef2);
+		if (m_bUseMap)
+			DrawLoziMap(map, pix, w, h, coef1, coef2);
+		else
+			DrawLoziMix(pix, w, h, coef1, coef2);
 		if (th.joinable())
 			th.join();
 		SaveImg(w, h, i, pix, buf.data(), th);
