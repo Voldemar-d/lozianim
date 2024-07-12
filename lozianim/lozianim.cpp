@@ -18,7 +18,7 @@ void printHelp(char** argv, const bool bFull) {
 	std::cout << "-help\t\t\tdisplay this help" << '\n';
 	std::cout << "-width {N}\t\tset output image width in pixels, 1280 by default" << '\n';
 	std::cout << "-height {N}\t\tset output image height in pixels, 720 by default" << '\n';
-	std::cout << "-mix\t\t\tmix pixel color with background without pixel/color map (turned off by default)" << '\n';
+	std::cout << "-mix\t\t\tmix pixel color with background without pixel/color mapping (turned off by default)" << '\n';
 	std::cout << "-outfolder {path}\tset output folder (will be created it doesn't exist) for saving image files" << '\n';
 	std::cout << "-steps {N}\t\tset number of output images (animation steps), 1 by default" << '\n';
 	std::cout << "-coef1 {v}\t\tset value (float) of coefficient B, -1.0 by default" << '\n';

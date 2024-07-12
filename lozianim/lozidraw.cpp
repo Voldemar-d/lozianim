@@ -134,8 +134,6 @@ void CFracDraw::MixPixel(pixBuf& pix, const int x, const int y, const uint32_t c
 {
 	if (x < 0 || y < 0 || x >= w || y >= h)
 		return;
-	if (pix.empty())
-		pix.resize(w * h, 0);
 	auto& v = pix[y * w + x];
 	// RGB of background
 	int rb = GetRValue(v), gb = GetGValue(v), bb = GetBValue(v);

@@ -26,6 +26,7 @@ options can be:
 -help			display this help
 -width {N}		set output image width in pixels, 1280 by default
 -height {N}		set output image height in pixels, 720 by default
+-mix                    mix pixel color with background without pixel/color mapping (turned off by default)
 -outfolder {path}	set output folder (will be created it doesn't exist) for saving image files
 -steps {N}		set number of output images (animation steps), 1 by default
 -coef1 {v}		set value (float) of coefficient B, -1.0 by default
@@ -44,6 +45,8 @@ Example (B: -1.0 => -1.0, C: 0.5 => 1.0 in 100 steps):
 100 -1.0 -1.0 0.5 1
 </pre>
 If one image is generated, file name 'image.png' is used, and 'imageNNNNN.png' for image series.
+
+By default, the program generates mapping between pixel colors in `{x, y}` coordinates, then draws the image using color weight in every pixel when mixing colors with the background. If you specify `-mix` option in command line, no mapping is used, i.e. pixel color of every point is immediately mixed with background color. This makes the work faster, but with sligthly different look of generated images.
 ### Examples
 <pre>
 lozianim.exe -outfolder D:\tmp\png -coef1 -0.9 -coef2 0.5
