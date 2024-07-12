@@ -197,7 +197,7 @@ int main(int argc, char* argv[])
 		if (bMix)
 			std::cout << "Mixing colors with background\n";
 		else
-			std::cout << "Using pixel/color map for mixing with background\n";
+			std::cout << "Using pixel/color mapping for mixing with background\n";
 		std::cout << "Running " << nthreads << " threads, press 'q' to exit:\n";
 		return cr::steady_clock::now();
 	};
@@ -216,7 +216,7 @@ int main(int argc, char* argv[])
 		if (nsteps < 2) { // save one image
 			fs::path fpath(outfolder);
 			fpath.append("image.png");
-			std::cout << "Generating image (" << (bMix ? "mix color" : "use pixel/color map") << ")...\n";
+			std::cout << "Generating image (" << (bMix ? "mix color" : "use pixel/color mapping") << ")...\n";
 			CFracDraw frac;
 			pixBuf pix;
 			if (bMix)
